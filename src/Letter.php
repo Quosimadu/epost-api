@@ -11,7 +11,7 @@
  * @license   https://github.com/richardhj/epost-api/blob/master/LICENSE LGPL-3.0
  */
 
-namespace Richardhj\EPost\Api;
+namespace Quosimadu\EPost\Api;
 
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\BadResponseException;
@@ -19,14 +19,14 @@ use GuzzleHttp\Psr7\MultipartStream;
 use InvalidArgumentException;
 use League\OAuth2\Client\Token\AccessToken;
 use LogicException;
-use Richardhj\EPost\Api\Exception\MissingAccessTokenException;
-use Richardhj\EPost\Api\Exception\MissingAttachmentException;
-use Richardhj\EPost\Api\Exception\MissingEnvelopeException;
-use Richardhj\EPost\Api\Exception\MissingPreconditionException;
-use Richardhj\EPost\Api\Exception\MissingRecipientException;
-use Richardhj\EPost\Api\Metadata\DeliveryOptions;
-use Richardhj\EPost\Api\Metadata\Envelope;
-use Richardhj\EPost\Api\Metadata\PostageInfo;
+use Quosimadu\EPost\Api\Exception\MissingAccessTokenException;
+use Quosimadu\EPost\Api\Exception\MissingAttachmentException;
+use Quosimadu\EPost\Api\Exception\MissingEnvelopeException;
+use Quosimadu\EPost\Api\Exception\MissingPreconditionException;
+use Quosimadu\EPost\Api\Exception\MissingRecipientException;
+use Quosimadu\EPost\Api\Metadata\DeliveryOptions;
+use Quosimadu\EPost\Api\Metadata\Envelope;
+use Quosimadu\EPost\Api\Metadata\PostageInfo;
 
 
 /**

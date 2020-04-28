@@ -11,12 +11,12 @@
  * @license   https://github.com/richardhj/epost-api/blob/master/LICENSE LGPL-3.0
  */
 
-namespace Richardhj\EPost\Api\Metadata;
+namespace Quosimadu\EPost\Api\Metadata;
 
 use InvalidArgumentException;
 use LogicException;
-use Richardhj\EPost\Api\Metadata\Envelope\AbstractRecipient;
-use Richardhj\EPost\Api\Metadata\Envelope\Recipient;
+use Quosimadu\EPost\Api\Metadata\Envelope\AbstractRecipient;
+use Quosimadu\EPost\Api\Metadata\Envelope\Recipient;
 
 
 /**
@@ -24,7 +24,7 @@ use Richardhj\EPost\Api\Metadata\Envelope\Recipient;
  *
  * @package Richardhj\EPost\Api\Metadata
  */
-final class Envelope implements MetadataInterface
+class Envelope implements MetadataInterface
 {
 
     /**
@@ -147,14 +147,12 @@ final class Envelope implements MetadataInterface
     {
         switch ($this->getSystemMessageType()) {
             case self::LETTER_TYPE_NORMAL:
-                return $this->data['recipients'];
+                return !empty($this->data['recipients']) ? $this->data['recipients'] : [];
                 break;
-
             case self::LETTER_TYPE_HYBRID:
-                return $this->data['recipientsPrinted'];
+                return !empty($this->data['recipientsPrinted']) ? $this->data['recipientsPrinted'] : [];
                 break;
         }
-
         return null;
     }
 

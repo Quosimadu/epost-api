@@ -11,7 +11,7 @@
  * @license   https://github.com/richardhj/epost-api/blob/master/LICENSE LGPL-3.0
  */
 
-namespace Richardhj\EPost\Api\Metadata;
+namespace Quosimadu\EPost\Api\Metadata;
 
 use JsonSerializable;
 

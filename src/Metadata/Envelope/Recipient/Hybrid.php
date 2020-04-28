@@ -11,11 +11,11 @@
  * @license   https://github.com/richardhj/epost-api/blob/master/LICENSE LGPL-3.0
  */
 
-namespace Richardhj\EPost\Api\Metadata\Envelope\Recipient;
+namespace Quosimadu\EPost\Api\Metadata\Envelope\Recipient;
 
 use InvalidArgumentException;
-use Richardhj\EPost\Api\Exception\InvalidRecipientDataException;
-use Richardhj\EPost\Api\Metadata\Envelope\AbstractRecipient;
+use Quosimadu\EPost\Api\Exception\InvalidRecipientDataException;
+use Quosimadu\EPost\Api\Metadata\Envelope\AbstractRecipient;
 
 
 /**
@@ -23,7 +23,7 @@ use Richardhj\EPost\Api\Metadata\Envelope\AbstractRecipient;
  *
  * @package Richardhj\EPost\Api\Metadata\Envelope\Recipient
  */
-final class Hybrid extends AbstractRecipient
+class Hybrid extends AbstractRecipient
 {
 
     /**
