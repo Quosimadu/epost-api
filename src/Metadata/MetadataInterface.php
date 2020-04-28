@@ -1,21 +1,26 @@
 <?php
+
 /**
- * E-POSTBUSINESS API integration
+ * This file is part of richardhj/epost-api.
  *
- * Copyright (c) 2015-2016 Richard Henkenjohann
+ * Copyright (c) 2015-2017 Richard Henkenjohann
  *
- * @package E-POSTBUSINESS
- * @author  Richard Henkenjohann <richard-epost@henkenjohann.me>
+ * @package   richardhj/epost-api
+ * @author    Richard Henkenjohann <richardhenkenjohann@googlemail.com>
+ * @copyright 2015-2017 Richard Henkenjohann
+ * @license   https://github.com/richardhj/epost-api/blob/master/LICENSE LGPL-3.0
  */
 
-namespace EPost\Api\Metadata;
+namespace Quosimadu\EPost\Api\Metadata;
+
+use JsonSerializable;
 
 
 /**
  * Interface MetadataInterface
- * @package EPost\Api\Metadata
+ * @package Richardhj\EPost\Api\Metadata
  */
-interface MetadataInterface extends \JsonSerializable
+interface MetadataInterface extends JsonSerializable
 {
 
     /**
