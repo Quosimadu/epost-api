@@ -1,14 +1,10 @@
 <?php
 
 /**
- * This file is part of richardhj/epost-api.
+ * This file is part of quosimadu/epost-api.
  *
- * Copyright (c) 2015-2017 Richard Henkenjohann
- *
- * @package   richardhj/epost-api
- * @author    Richard Henkenjohann <richardhenkenjohann@googlemail.com>
- * @copyright 2015-2017 Richard Henkenjohann
- * @license   https://github.com/richardhj/epost-api/blob/master/LICENSE LGPL-3.0
+ * @package   quosimadu/epost-api
+ * @author    Mantas Samaitis <mantas.samaitis@integrus.lt>, Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  */
 
 namespace Quosimadu\EPost\Api;
@@ -26,7 +22,6 @@ use Quosimadu\EPost\Api\Exception\MissingPreconditionException;
 use Quosimadu\EPost\Api\Exception\MissingRecipientException;
 use Quosimadu\EPost\Api\Metadata\DeliveryOptions;
 use Quosimadu\EPost\Api\Metadata\Envelope;
-use Quosimadu\EPost\Api\Metadata\PostageInfo;
 
 
 /**
@@ -38,32 +33,18 @@ class Letter
 {
 
     /**
-     * Mailbox endpoint for production environment
+     * EPost endpoint for production environment
      *
      * @var string
      */
-    private static $endpointMailboxProduction = 'https://mailbox.api.epost.de';
+    private static $endpointProduction = '';
 
     /**
-     * Mailbox endpoint for test and integration environment
+     * EPost endpoint for test and integration environment
      *
      * @var string
      */
-    private static $endpointMailboxTest = 'https://mailbox.api.epost-gka.de';
-
-    /**
-     * Send endpoint for production environment
-     *
-     * @var string
-     */
-    private static $endpointSendProduction = 'https://send.api.epost.de';
-
-    /**
-     * Send endpoint for test and integration environment
-     *
-     * @var string
-     */
-    private static $endpointSendTest = 'https://send.api.epost-gka.de';
+    private static $endpointTest = 'https://api.epost.docuguide.com';
 
     /**
      * A toggle to enable test and integration environment
@@ -94,11 +75,11 @@ class Letter
     private $coverLetter;
 
     /**
-     * The attachments paths
+     * The attachment paths
      *
-     * @var string[]
+     * @var string
      */
-    private $attachments;
+    private $attachment;
 
     /**
      * The delivery options
@@ -106,13 +87,6 @@ class Letter
      * @var DeliveryOptions
      */
     private $deliveryOptions;
-
-    /**
-     * The postage info
-     *
-     * @var PostageInfo
-     */
-    private $postageInfo;
 
     /**
      * The letter's id available after the draft was created
@@ -126,19 +100,9 @@ class Letter
      *
      * @return string
      */
-    public function getEndpointMailbox()
+    public function getEndpoint()
     {
-        return !$this->isTestEnvironment() ? static::$endpointMailboxProduction : static::$endpointMailboxTest;
-    }
-
-    /**
-     * Get the endpoint for send api
-     *
-     * @return string
-     */
-    public function getEndpointSend()
-    {
-        return !$this->isTestEnvironment() ? static::$endpointSendProduction : static::$endpointSendTest;
+        return !$this->isTestEnvironment() ? static::$endpointProduction : static::$endpointTest;
     }
 
     /**
@@ -230,51 +194,32 @@ class Letter
     }
 
     /**
-     * Add an attachment
+     * Set attachment
      *
-     * @param string $attachment The file path
+     * @param string $attachment The attachment path
      *
      * @return self
-     * @throws InvalidArgumentException If the file is not found or it is no file
      */
-    public function addAttachment($attachment): Letter
+    public function setAttachment($attachment): Letter
     {
-        if (!is_file($attachment)) {
-            throw new InvalidArgumentException('"%s" can not be found or is not a file');
-        }
-
-        $this->attachments[] = $attachment;
+        $this->attachment = $attachment;
 
         return $this;
     }
 
     /**
-     * Set attachments
+     * Get the attachment
      *
-     * @param string[] $attachments The attachment paths
-     *
-     * @return self
+     * @return string
+     * @throws MissingAttachmentException If the attachment is missing
      */
-    public function setAttachments($attachments): Letter
+    public function getAttachment()
     {
-        $this->attachments = $attachments;
-
-        return $this;
-    }
-
-    /**
-     * Get the attachments
-     *
-     * @return string[]
-     * @throws MissingAttachmentException If the attachments are missing
-     */
-    public function getAttachments()
-    {
-        if (!count($this->attachments)) {
-            throw new MissingAttachmentException('No attachments provided! Add at least one attachment');
+        if (empty($this->attachment)) {
+            throw new MissingAttachmentException('No attachment provided! Please add an attachment.');
         }
 
-        return $this->attachments;
+        return $this->attachment;
     }
 
     /**
@@ -287,10 +232,6 @@ class Letter
      */
     public function setDeliveryOptions(DeliveryOptions $deliveryOptions): Letter
     {
-        if ($this->envelope && $this->envelope->isNormalLetter()) {
-            throw new LogicException('Delivery options are not supported for non-printed letters.');
-        }
-
         $this->deliveryOptions = $deliveryOptions;
 
         return $this;
@@ -304,55 +245,6 @@ class Letter
     public function getDeliveryOptions()
     {
         return $this->deliveryOptions;
-    }
-
-    /**
-     * Set the postage info
-     *
-     * @param PostageInfo $postageInfo
-     *
-     * @return self
-     */
-    public function setPostageInfo(PostageInfo $postageInfo): Letter
-    {
-        $this->postageInfo = $postageInfo;
-
-        return $this;
-    }
-
-    /**
-     * Get the postage info
-     *
-     * @return PostageInfo
-     * @throws MissingPreconditionException If no postage info are given
-     */
-    public function getPostageInfo()
-    {
-        if (null === $this->postageInfo) {
-            throw new MissingPreconditionException('No postage info provided! Provide them beforehand');
-        }
-
-        // Set delivery options to postage info if they were passed to this instance
-        if (null === $this->postageInfo->getDeliveryOptions() && null !== $this->getDeliveryOptions()) {
-            $this->postageInfo->setDeliveryOptions($this->getDeliveryOptions());
-        }
-
-        // Set the attachment's file size for normal letters
-        if (!$this->postageInfo->getLetterSize() && $this->postageInfo->isNormalLetter() && $this->attachments) {
-            $size = array_reduce(
-                $this->attachments,
-                function ($carry, $path) {
-                    $carry += filesize($path);
-
-                    return $carry;
-                },
-                0
-            );
-
-            $this->postageInfo->setLetterSize(ceil($size / 1048576));
-        }
-
-        return $this->postageInfo;
     }
 
     /**
@@ -409,82 +301,6 @@ class Letter
     }
 
     /**
-     * Create a draft by given envelope and attachments
-     *
-     * @return self
-     * @throws BadResponseException See API Send Reference
-     */
-    public function create(): Letter
-    {
-        $multipartElements = [
-            [
-                'name'     => 'envelope',
-                'contents' => \GuzzleHttp\json_encode($this->getEnvelope()),
-                'headers'  => ['Content-Type' => $this->getEnvelope()->getMimeType()],
-            ],
-        ];
-
-        if ($this->getCoverLetter()) {
-            $multipartElements[] = [
-                'name'     => 'cover_letter',
-                'contents' => $this->getCoverLetter(),
-                'headers'  => ['Content-Type' => 'text/html'],
-            ];
-        }
-
-        foreach ($this->getAttachments() as $attachment) {
-            $multipartElements[] = [
-                'name'     => 'file',
-                'contents' => fopen($attachment, 'rb'),
-                'headers'  => ['Content-Type' => static::getMimeTypeOfFile($attachment)],
-            ];
-        }
-
-        $multipart      = new MultipartStream($multipartElements);
-        $requestOptions = [
-            'headers' => [
-                'Content-Type' => 'multipart/mixed; boundary='.$multipart->getBoundary(),
-            ],
-            'body'    => $multipart,
-        ];
-
-        $response = $this->getHttpClientForMailbox()->request('POST', '/letters', $requestOptions);
-        $data     = \GuzzleHttp\json_decode($response->getBody()->getContents());
-
-        $this->setLetterId($data->letterId);
-
-        return $this;
-    }
-
-    /**
-     * Move the given letter to trash (idempotent call)
-     *
-     * @return self
-     * @throws BadResponseException See API Send Reference
-     */
-    public function moveToTrash(): Letter
-    {
-        $this->getHttpClientForMailbox()->request('DELETE', '/letters/'.$this->getLetterId());
-
-        return $this;
-    }
-
-    /**
-     * Delete the given letter irrevocable
-     *
-     * @return self
-     * @throws BadResponseException See API Send Reference
-     */
-    public function delete(): Letter
-    {
-        $this
-            ->moveToTrash()
-            ->getHttpClientForMailbox()->request('DELETE', '/trash/'.$this->getLetterId());
-
-        return $this;
-    }
-
-    /**
      * Send the given letter. Delivery options should be set optionally for physical letters
      *
      * @return self
@@ -492,76 +308,42 @@ class Letter
      */
     public function send(): Letter
     {
+        $data = $this->getEnvelope();
+
+        if ($this->getCoverLetter()) {
+            $data['coverLetter'] = true;
+            $data['coverData'] = $this->getCoverLetter();
+        } else {
+            $data['coverLetter'] = false;
+        }
+
+        $attachment = $this->getAttachment();
+        $data['fileName'] = basename($attachment);
+        $data['data'] = fopen($attachment, 'rb');
+
+        if (null !== $this->getDeliveryOptions()) {
+            $data = array_merge($data, $this->getDeliveryOptions());
+        }
+
+        if($this->isTestEnvironment()) {
+            $data = array_merge($data, [
+                'testFlag' => true,
+//                'testEMail' => 'test@test.com'
+            ]);
+        }
+
         $options = [
-            'headers' => [
-                'Content-Source' => $this->getEndpointMailbox().'/letters/'.$this->getLetterId(),
-            ],
+            'body'    => $data,
         ];
 
-        if ($this->getEnvelope()->isHybridLetter() && null !== $this->getDeliveryOptions()) {
-            $options['headers']['Content-Type'] = $this->getDeliveryOptions()->getMimeType();
-            $options['json']                    = $this->getDeliveryOptions();
-        }
+        $response = $this->getHttpClient($this->getEndpoint())
+            ->request('POST', '/deliveries', $options);
 
-        $this->getHttpClientForSend()->request('POST', '/deliveries', $options);
+        $data     = \GuzzleHttp\json_decode($response->getBody()->getContents());
+
+        $this->setLetterId($data->letterId);
 
         return $this;
-    }
-
-    /**
-     * Query price information for a given letter (created beforehand) or for general purposes (with given postage info)
-     *
-     * @return \stdClass
-     * @throws BadResponseException See API Send Reference
-     * @throws MissingPreconditionException If neither letterId nor PostageInfo provided
-     */
-    public function queryPriceInformation()
-    {
-        try {
-            // Try to fetch postage info for a particular draft that was created beforehand
-            $options = [
-                'headers' => [
-                    'Content-Source' => $this->getEndpointMailbox().'/letters/'.$this->getLetterId(),
-                ],
-            ];
-
-            if ($this->getEnvelope()->isHybridLetter() && $this->getDeliveryOptions()) {
-                $options['headers']['Content-Type'] = $this->getDeliveryOptions()->getMimeType();
-                $options['json']                    = $this->getDeliveryOptions();
-            }
-        } catch (MissingPreconditionException $e) {
-            // Fetch postage info without a given letter
-            $options = [
-                'headers' => [
-                    'Content-Type' => $this->getPostageInfo()->getMimeType(),
-                ],
-                'json'    => $this->getPostageInfo(),
-            ];
-        }
-
-        $response = $this->getHttpClientForSend()->request('POST', '/postage-info', $options);
-
-        return \GuzzleHttp\json_decode($response->getBody()->getContents());
-    }
-
-    /**
-     * Get the http client with the mailbox api as endpoint
-     *
-     * @return HttpClient
-     */
-    protected function getHttpClientForMailbox(): HttpClient
-    {
-        return $this->getHttpClient($this->getEndpointMailbox());
-    }
-
-    /**
-     * Get the http client with the send api as endpoint
-     *
-     * @return HttpClient
-     */
-    protected function getHttpClientForSend(): HttpClient
-    {
-        return $this->getHttpClient($this->getEndpointSend());
     }
 
     /**
@@ -577,7 +359,7 @@ class Letter
             [
                 'base_uri' => $baseUri,
                 'headers'  => [
-                    'x-epost-access-token' => $this->getAccessToken()->getToken(),
+                    'Authorization' => 'Bearer #'. $this->getAccessToken()->getToken() .'#',
                 ],
             ]
         );

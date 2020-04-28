@@ -1,78 +1,54 @@
 <?php
 
 /**
- * This file is part of richardhj/epost-api.
+ * This file is part of quosimadu/epost-api.
  *
- * Copyright (c) 2015-2017 Richard Henkenjohann
- *
- * @package   richardhj/epost-api
- * @author    Richard Henkenjohann <richardhenkenjohann@googlemail.com>
- * @copyright 2015-2017 Richard Henkenjohann
- * @license   https://github.com/richardhj/epost-api/blob/master/LICENSE LGPL-3.0
+ * @package   quosimadu/epost-api
+ * @author    Mantas Samaitis <mantas.samaitis@integrus.lt>, Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  */
 
 namespace Quosimadu\EPost\Api\Metadata;
 
 use InvalidArgumentException;
+use JsonSerializable;
 
 
 /**
  * Class DeliveryOptions
  *
- * @package Richardhj\EPost\Api\Metadata
+ * @package Quosimadu\EPost\Api\Metadata
  */
-class DeliveryOptions implements MetadataInterface
+class DeliveryOptions implements JsonSerializable
 {
-
-    /**
-     * Color grayscale
-     */
-    const OPTION_COLOR_GRAYSCALE = 'grayscale';
-
-    /**
-     * Color colored
-     */
-    const OPTION_COLOR_COLORED = 'colored';
-
-    /**
-     * Cover letter included
-     */
-    const OPTION_COVER_LETTER_INCLUDED = 'included';
-
-    /**
-     * Cover letter generate
-     */
-    const OPTION_COVER_LETTER_GENERATE = 'generate';
-
     /**
      * Registered standard
      */
-    const OPTION_REGISTERED_STANDARD = 'standard';
+    const OPTION_REGISTERED_STANDARD = 'Einschreiben';
 
     /**
      * Registered submission only
      */
-    const OPTION_REGISTERED_SUBMISSION_ONLY = 'submissionOnly';
+    const OPTION_REGISTERED_SUBMISSION_ONLY = 'Einwurf Einschreiben';
 
     /**
      * Registered addressee only
      */
-    const OPTION_REGISTERED_ADDRESSEE_ONLY = 'addresseeOnly';
+    const OPTION_REGISTERED_ADDRESSEE_ONLY = 'Einschreiben eigenhändig';
 
     /**
      * Registered with return receipt
      */
-    const OPTION_REGISTERED_WITH_RETURN_RECEIPT = 'withReturnReceipt';
+    const OPTION_REGISTERED_WITH_RETURN_RECEIPT = 'Einschreiben Rückschein';
 
     /**
      * Registered addressee only with return receipt
      */
-    const OPTION_REGISTERED_ADDRESSEE_ONLY_WITH_RETURN_RECEIPT = 'addresseeOnlyWithReturnReceipt';
+    const OPTION_REGISTERED_ADDRESSEE_ONLY_WITH_RETURN_RECEIPT = 'Einschreiben eigenhändig Rückschein';
 
     /**
      * Registered no
      */
-    const OPTION_REGISTERED_NO = 'no';
+    const OPTION_REGISTERED_NO = null;
 
     /**
      * The data used for json encoding
@@ -88,7 +64,7 @@ class DeliveryOptions implements MetadataInterface
      */
     public function setColorGrayscale(): DeliveryOptions
     {
-        return $this->setColor(self::OPTION_COLOR_GRAYSCALE);
+        return $this->setColor(false);
     }
 
     /**
@@ -98,27 +74,24 @@ class DeliveryOptions implements MetadataInterface
      */
     public function setColorColored(): DeliveryOptions
     {
-        return $this->setColor(self::OPTION_COLOR_COLORED);
+        return $this->setColor(true);
     }
 
     /**
      * The option specifies whether a color or black-and-white printing is carried out
      *
-     * @param string $color
+     * @param bool $enabled
      *
      * @return self
      * @throws InvalidArgumentException
      */
-    public function setColor($color): DeliveryOptions
+    public function setColor($enabled): DeliveryOptions
     {
-        if (!in_array($color, static::getOptionsForColor())) {
-            throw new InvalidArgumentException(sprintf('Property %s is not supported for %s', $color, __FUNCTION__));
-        }
-
-        $this->data['color'] = $color;
+        $this->data['isColor'] = $enabled;
 
         return $this;
     }
+
 
     /**
      * Get color property
@@ -127,7 +100,7 @@ class DeliveryOptions implements MetadataInterface
      */
     public function getColor()
     {
-        return $this->data['color'] ?? self::OPTION_COLOR_GRAYSCALE;
+        return $this->data['isColor'] ?? false;
     }
 
     /**
@@ -137,7 +110,7 @@ class DeliveryOptions implements MetadataInterface
      */
     public function setCoverLetterIncluded(): DeliveryOptions
     {
-        return $this->setCoverLetter(self::OPTION_COVER_LETTER_INCLUDED);
+        return $this->setCoverLetter(true);
     }
 
     /**
@@ -147,26 +120,20 @@ class DeliveryOptions implements MetadataInterface
      */
     public function setCoverLetterGenerate(): DeliveryOptions
     {
-        return $this->setCoverLetter(self::OPTION_COVER_LETTER_GENERATE);
+        return $this->setCoverLetter(false);
     }
 
     /**
      * The option specifies whether a cover letter is generated for delivery or if it is included in the PDF attachment
      *
-     * @param string $coverLetter
+     * @param bool $enabled
      *
      * @return self
      * @throws InvalidArgumentException
      */
-    public function setCoverLetter($coverLetter): DeliveryOptions
+    public function setCoverLetter($enabled): DeliveryOptions
     {
-        if (!in_array($coverLetter, static::getOptionsForCoverLetter())) {
-            throw new InvalidArgumentException(
-                sprintf('Property %s is not supported for %s', $coverLetter, __FUNCTION__)
-            );
-        }
-
-        $this->data['coverLetter'] = $coverLetter;
+        $this->data['coverLetter'] = $enabled;
 
         return $this;
     }
@@ -178,7 +145,7 @@ class DeliveryOptions implements MetadataInterface
      */
     public function getCoverLetter()
     {
-        return $this->data['coverLetter'] ?? self::OPTION_COVER_LETTER_GENERATE;
+        return $this->data['coverLetter'] ?? false;
     }
 
     /**
@@ -191,7 +158,7 @@ class DeliveryOptions implements MetadataInterface
      */
     public function setDuplex($duplex): DeliveryOptions
     {
-        $this->data['duplex'] = (bool)$duplex;
+        $this->data['isDuplex'] = (bool)$duplex;
 
         return $this;
     }
@@ -203,7 +170,7 @@ class DeliveryOptions implements MetadataInterface
      */
     public function getDuplex()
     {
-        return (bool)$this->data['duplex'];
+        return (bool)$this->data['isDuplex'];
     }
 
     /**
@@ -290,7 +257,7 @@ class DeliveryOptions implements MetadataInterface
             );
         }
 
-        $this->data['registered'] = $registered;
+        $this->data['registeredLetter'] = $registered;
 
         return $this;
     }
@@ -302,57 +269,7 @@ class DeliveryOptions implements MetadataInterface
      */
     public function getRegistered()
     {
-        return $this->data['registered'] ?? self::OPTION_REGISTERED_NO;
-    }
-
-    /**
-     * The option specifies whether an “Adressanreicherung” (address updating and enhancement) is to be carried out
-     *
-     * @param bool $tryElectronic
-     *
-     * @return self
-     */
-    public function setTryElectronic($tryElectronic): DeliveryOptions
-    {
-        $this->data['tryElectronic'] = (bool)$tryElectronic;
-
-        return $this;
-    }
-
-    /**
-     * Get tryElectronic property
-     *
-     * @return bool
-     */
-    public function getTryElectronic()
-    {
-        return (bool)$this->data['tryElectronic'];
-    }
-
-    /**
-     * Get all options that can be used for setColor()
-     *
-     * @return array
-     */
-    public static function getOptionsForColor()
-    {
-        return [
-            self::OPTION_COLOR_GRAYSCALE,
-            self::OPTION_COLOR_COLORED,
-        ];
-    }
-
-    /**
-     * Get all options that can be used for setCoverLetter()
-     *
-     * @return array
-     */
-    public static function getOptionsForCoverLetter()
-    {
-        return [
-            self::OPTION_COVER_LETTER_GENERATE,
-            self::OPTION_COVER_LETTER_INCLUDED,
-        ];
+        return $this->data['registeredLetter'] ?? self::OPTION_REGISTERED_NO;
     }
 
     /**
@@ -385,16 +302,8 @@ class DeliveryOptions implements MetadataInterface
     /**
      * {@inheritdoc}
      */
-    public static function getMimeType()
-    {
-        return 'application/vnd.epost-dispatch-options+json';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     function jsonSerialize()
     {
-        return ['options' => $this->getData()];
+        return $this->getData();
     }
 }

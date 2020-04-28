@@ -1,14 +1,10 @@
 <?php
 
 /**
- * This file is part of richardhj/epost-api.
+ * This file is part of quosimadu/epost-api.
  *
- * Copyright (c) 2015-2017 Richard Henkenjohann
- *
- * @package   richardhj/epost-api
- * @author    Richard Henkenjohann <richardhenkenjohann@googlemail.com>
- * @copyright 2015-2017 Richard Henkenjohann
- * @license   https://github.com/richardhj/epost-api/blob/master/LICENSE LGPL-3.0
+ * @package   quosimadu/epost-api
+ * @author    Mantas Samaitis <mantas.samaitis@integrus.lt>, Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  */
 
 namespace Quosimadu\EPost\Api\Exception;
@@ -18,7 +14,7 @@ use LogicException;
 
 /**
  * Class MissingPreconditionException
- * @package Richardhj\EPost\Api\Exception
+ * @package Quosimadu\EPost\Api\Exception
  */
 class MissingPreconditionException extends LogicException
 {
