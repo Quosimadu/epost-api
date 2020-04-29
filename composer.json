@@ -23,10 +23,5 @@
     "psr-4": {
       "Quosimadu\\EPost\\Api\\": "src/"
     }
-  },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "dev-feature/v0.10.0"
-    }
-  },
+  }
 }
