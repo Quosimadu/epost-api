@@ -1,21 +1,22 @@
 <?php
+
 /**
- * E-POSTBUSINESS API integration
+ * This file is part of quosimadu/epost-api.
  *
- * Copyright (c) 2015-2016 Richard Henkenjohann
- *
- * @package E-POSTBUSINESS
- * @author  Richard Henkenjohann <richard-epost@henkenjohann.me>
+ * @package   quosimadu/epost-api
+ * @author    Mantas Samaitis <mantas.samaitis@integrus.lt>, Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  */
 
-namespace EPost\Api\Exception;
+namespace Quosimadu\EPost\Api\Exception;
+
+use LogicException;
 
 
 /**
  * Class InvalidRecipientDataException
- * @package EPost\Api\Exception
+ * @package Quosimadu\EPost\Api\Exception
  */
-class InvalidRecipientDataException extends \LogicException
+class InvalidRecipientDataException extends LogicException
 {
 
 }

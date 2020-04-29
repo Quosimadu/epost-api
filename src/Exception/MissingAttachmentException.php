@@ -9,14 +9,12 @@
 
 namespace Quosimadu\EPost\Api\Exception;
 
-use LogicException;
-
 
 /**
- * Class MissingPreconditionException
+ * Class MissingAttachmentException
  * @package Quosimadu\EPost\Api\Exception
  */
-class MissingPreconditionException extends LogicException
+class MissingAttachmentException extends MissingPreconditionException
 {
 
 }

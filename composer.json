@@ -1,33 +1,32 @@
 {
-  "name": "richardhj/epost-api",
+  "name": "quosimadu/epost-api",
   "description": "E-POSTBUSINESS API PHP integration",
   "authors": [
     {
-      "name": "Richard Henkenjohann",
-      "email": "richard-epost@henkenjohann.me",
-      "homepage": "http://henkenjohann.me",
-      "role": "Developer"
+      "name": "Mantas Samaitis",
+      "email": "mantas.samaitis@integrus.lt",
+      "homepage": "http://mantak.eu",
+      "role": "Web Developer"
     }
   ],
   "license": "LGPL-3.0+",
   "support": {
-    "issues": "https://github.com/richardhj/epost-api/issues",
-		"source": "https://github.com/richardhj/epost-api"
+    "issues": "https://github.com/quosimadu/epost-api/issues",
+    "source": "https://github.com/quosimadu/epost-api"
   },
   "require": {
-    "php": "^5.4 || ^7.0",
+    "php": "^7.0",
     "guzzlehttp/guzzle": "^6.0",
     "richardhj/oauth2-epost": "*"
   },
   "autoload": {
     "psr-4": {
-      "EPost\\Api\\": "src/"
+      "Quosimadu\\EPost\\Api\\": "src/"
     }
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "0.9.x-dev",
-      "dev-feature/v0.10.0": "0.10.x-dev"
+      "dev-master": "dev-feature/v0.10.0"
     }
-  }
+  },
 }
