@@ -13,7 +13,6 @@ use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\MultipartStream;
 use InvalidArgumentException;
-use League\OAuth2\Client\Token\AccessToken;
 use LogicException;
 use Quosimadu\EPost\Api\Exception\MissingAccessTokenException;
 use Quosimadu\EPost\Api\Exception\MissingAttachmentException;
@@ -37,7 +36,7 @@ class Letter
      *
      * @var string
      */
-    private static $endpointProduction = '';
+    private static $endpointProduction = 'https://api.epost.docuguide.com';
 
     /**
      * EPost endpoint for test and integration environment
