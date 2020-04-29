@@ -161,16 +161,15 @@ class Letter
             throw new MissingEnvelopeException('No Envelope provided! Provide one beforehand');
         }
 
-        // Check for recipients
-        if (empty($this->envelope->getRecipients())) {
-            throw new MissingRecipientException('No recipients provided! Add them beforehand');
+        if (empty($this->envelope->getData())) {
+            throw new MissingRecipientException('No recipient provided! Add them beforehand');
         }
 
         return $this->envelope;
     }
 
     /**
-     * Set the cover letter as html string
+     * Set the cover letter as path
      *
      * @param string $coverLetter
      *
@@ -184,7 +183,7 @@ class Letter
     }
 
     /**
-     * Get the html formatted cover letter
+     * Get the pdf formatted cover letter path
      *
      * @return string
      */
@@ -194,7 +193,7 @@ class Letter
     }
 
     /**
-     * Set attachment
+     * Set attachment as path
      *
      * @param string $attachment The attachment path
      *
@@ -208,7 +207,7 @@ class Letter
     }
 
     /**
-     * Get the attachment
+     * Get the attachment path
      *
      * @return string
      * @throws MissingAttachmentException If the attachment is missing
@@ -270,7 +269,7 @@ class Letter
     public function getLetterId()
     {
         if (!$this->letterId) {
-            throw new MissingPreconditionException('No letter id provided! Set letter id or create draft beforehand');
+            throw new MissingPreconditionException('No letter id provided! Set letter id beforehand');
         }
 
         return $this->letterId;
@@ -312,14 +311,16 @@ class Letter
 
         if ($this->getCoverLetter()) {
             $data['coverLetter'] = true;
-            $data['coverData'] = $this->getCoverLetter();
+            $data['coverData'] = chunk_split(base64_encode(
+                fopen($this->getCoverLetter(), 'rb'))
+            );
         } else {
             $data['coverLetter'] = false;
         }
 
         $attachment = $this->getAttachment();
         $data['fileName'] = basename($attachment);
-        $data['data'] = fopen($attachment, 'rb');
+        $data['data'] = chunk_split(base64_encode(fopen($attachment, 'rb')));
 
         if (null !== $this->getDeliveryOptions()) {
             $data = array_merge($data, $this->getDeliveryOptions());
@@ -328,7 +329,7 @@ class Letter
         if($this->isTestEnvironment()) {
             $data = array_merge($data, [
                 'testFlag' => true,
-//                'testEMail' => 'test@test.com'
+                'testEMail' => 'mantaksam@gmail.com'
             ]);
         }
 
@@ -337,7 +338,7 @@ class Letter
         ];
 
         $response = $this->getHttpClient($this->getEndpoint())
-            ->request('POST', '/deliveries', $options);
+            ->request('POST', '/api/Letter', $options);
 
         $data     = \GuzzleHttp\json_decode($response->getBody()->getContents());
 
@@ -363,21 +364,5 @@ class Letter
                 ],
             ]
         );
-    }
-
-    /**
-     * Get a file's mime type
-     *
-     * @param $path
-     *
-     * @return mixed
-     */
-    private static function getMimeTypeOfFile($path)
-    {
-        $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime     = finfo_file($fileInfo, $path);
-        finfo_close($fileInfo);
-
-        return $mime;
     }
 }
