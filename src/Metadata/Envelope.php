@@ -27,9 +27,9 @@ class Envelope implements JsonSerializable
     /**
      * The data for used for json encoding
      *
-     * @var array
+     * @var Recipient
      */
-    protected $data = [];
+    protected $data;
 
     /**
      * Add a hybrid recipient for printed letters
@@ -52,7 +52,7 @@ class Envelope implements JsonSerializable
      */
     public function getData()
     {
-        return $this->data;
+        return $this->data->getData();
     }
 
     /**

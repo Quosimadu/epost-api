@@ -161,7 +161,7 @@ class Letter
             throw new MissingEnvelopeException('No Envelope provided! Provide one beforehand');
         }
 
-        if (empty($this->envelope->getData())) {
+        if ($this->envelope->getData() == null) {
             throw new MissingRecipientException('No recipient provided! Add them beforehand');
         }
 
@@ -307,12 +307,12 @@ class Letter
      */
     public function send(): Letter
     {
-        $data = $this->getEnvelope();
+        $data = $this->getEnvelope()->getData();
 
         if ($this->getCoverLetter()) {
             $data['coverLetter'] = true;
             $data['coverData'] = chunk_split(base64_encode(
-                fopen($this->getCoverLetter(), 'rb'))
+                file_get_contents($this->getCoverLetter()))
             );
         } else {
             $data['coverLetter'] = false;
@@ -320,21 +320,23 @@ class Letter
 
         $attachment = $this->getAttachment();
         $data['fileName'] = basename($attachment);
-        $data['data'] = chunk_split(base64_encode(fopen($attachment, 'rb')));
+        $data['data'] = chunk_split(base64_encode(
+            file_get_contents($attachment))
+        );
 
         if (null !== $this->getDeliveryOptions()) {
-            $data = array_merge($data, $this->getDeliveryOptions());
+            $data = array_merge($data, $this->getDeliveryOptions()->getData());
         }
 
         if($this->isTestEnvironment()) {
             $data = array_merge($data, [
-                'testFlag' => true,
-                'testEMail' => 'mantaksam@gmail.com'
+                'testFlag' => true
             ]);
         }
 
         $options = [
-            'body'    => $data,
+            'headers' => [ 'Content-Type' => 'application/json' ],
+            'body'    => json_encode([$data]),
         ];
 
         $response = $this->getHttpClient($this->getEndpoint())
@@ -342,7 +344,11 @@ class Letter
 
         $data     = \GuzzleHttp\json_decode($response->getBody()->getContents());
 
-        $this->setLetterId($data->letterId);
+        if($response->getStatusCode() != 200) {
+            throw new \Exception($data);
+        }
+
+        $this->setLetterId($data[0]->letterID);
 
         return $this;
     }
@@ -360,7 +366,7 @@ class Letter
             [
                 'base_uri' => $baseUri,
                 'headers'  => [
-                    'Authorization' => 'Bearer #'. $this->getAccessToken()->getToken() .'#',
+                    'Authorization' => 'Bearer '. $this->getAccessToken()->getToken(),
                 ],
             ]
         );

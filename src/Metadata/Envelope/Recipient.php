@@ -49,14 +49,14 @@ class Recipient implements JsonSerializable
      *
      * @return self
      */
-    public function setAddressLine($line, $num): Hybrid
+    public function setAddressLine($line, $num): Recipient
     {
-        if($num > 5 || $num < 1) {
-            throw new InvalidRecipientDataException('Address line number should be in range from 1 to 5.');
+        if($num >= 5 || $num < 0) {
+            throw new InvalidRecipientDataException('Address line number should be in range between 0 and 4.');
         }
 
-        self::validateSetLength('addressLine' . $num, $company);
-        $this->data['addressLine' . $num] = $company;
+        self::validateSetLength('addressLine' . ($num + 1), $line);
+        $this->data['addressLine' . ($num + 1)] = $line;
 
         return $this;
     }
@@ -66,7 +66,7 @@ class Recipient implements JsonSerializable
      */
     public function getAddressLine($num)
     {
-        return $this->data['addressLine' . $num] ?? null;
+        return $this->data['addressLine' . ($num + 1)] ?? null;
     }
 
     /**
@@ -74,7 +74,7 @@ class Recipient implements JsonSerializable
      *
      * @return self
      */
-    public function setZipCode($zipCode): Hybrid
+    public function setZipCode($zipCode): Recipient
     {
         self::validateSetLength('zipCode', $zipCode);
         $this->data['zipCode'] = $zipCode;
@@ -95,7 +95,7 @@ class Recipient implements JsonSerializable
      *
      * @@return self
      */
-    public function setCity($city): Hybrid
+    public function setCity($city): Recipient
     {
         self::validateSetLength('city', $city);
         $this->data['city'] = $city;
