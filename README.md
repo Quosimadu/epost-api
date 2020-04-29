@@ -12,7 +12,7 @@ This package provides an PHP integration of the E-POSTBUSINESS API.
 Via Composer
 
 ``` bash
-$ composer require richardhj/epost-api
+$ composer require quosimadu/epost-api
 ```
 
 **For new implementations, I recommend to start with `v0.10.x-dev`.**
@@ -38,8 +38,8 @@ options…), creates a letter draft on the E-POST portal and finally sends the l
 
 ```php
 // Create letter and envelope
-$letter = new Richardhj\EPost\Api\Letter();
-$envelope = new Richardhj\EPost\Api\Metadata\Envelope();
+$letter = new Quosimadu\EPost\Api\Letter();
+$envelope = new Quosimadu\EPost\Api\Metadata\Envelope();
 $envelope
     ->setSystemMessageTypeNormal()  // For sending an electronic letter *OR*
     ->setSystemMessageTypeHybrid()  // For sending a physical letter
@@ -51,7 +51,7 @@ We created our envelope and we need to add the recipients. This is how for an el
 
 ```php
 // Add recipients for normal letter
-$recipient = new Richardhj\EPost\Api\Metadata\Envelope\Recipient\Normal::createFromFriendlyEmail('John Doe <doe@example.com>');
+$recipient = new Quosimadu\EPost\Api\Metadata\Envelope\Recipient\Normal::createFromFriendlyEmail('John Doe <doe@example.com>');
 
 $envelope->addRecipientNormal($recipient);
 ```
@@ -60,7 +60,7 @@ And this is how for a printed letter. For printed letters, only one recipient is
 
 ```php
 // Set recipients and delivery options for printed letter
-$recipient = new Richardhj\EPost\Api\Metadata\Envelope\Recipient\Hybrid();
+$recipient = new Quosimadu\EPost\Api\Metadata\Envelope\Recipient\Hybrid();
 $recipient
     ->setFirstName('John')
     ->setLastName('Doe')
@@ -77,7 +77,7 @@ letters only.
 
 ```php
 // Set delivery options
-$deliveryOptions = new Richardhj\EPost\Api\Metadata\DeliveryOptions();
+$deliveryOptions = new Quosimadu\EPost\Api\Metadata\DeliveryOptions();
 $deliveryOptions
     ->setRegisteredStandard()   // This will make the letter sent as "Einschreiben ohne Optionen"
     ->setColorColored()         // To make it expensive
@@ -127,13 +127,13 @@ var_dump($priceInformation);
 Case 2: You need to provide `PostageInfo`:
 
 ```php
-$postageInfo = new Richardhj\EPost\Api\Metadata\PostageInfo();
+$postageInfo = new Quosimadu\EPost\Api\Metadata\PostageInfo();
 $postageInfo
     ->setLetterTypeHybrid()
     ->setLetterSize(3)
     ->setDeliveryOptions($deliveryOptions);
     
-$letter = new Richardhj\EPost\Api\Letter();
+$letter = new Quosimadu\EPost\Api\Letter();
 $letter->setPostageInfo($postageInfo);
 $priceInformation = $letter->queryPriceInformation();
 
@@ -185,6 +185,6 @@ das CMS Contao genutzt wurden.
 [image-concept]: https://www.dropbox.com/s/rfouu1bidkg62zs/Konzept_Henkenjohann_E-POST-Contao-1.png?dl=1
 
 [link-build]: https://travis-ci.org/richardhj/epost-api
-[link-packagist]: https://packagist.org/packages/richardhj/epost-api
+[link-packagist]: https://packagist.org/packages/quosimadu/epost-api
 [link-dependencies]: https://www.versioneye.com/php/richardhj:epost-api
 [link-concept]: https://www.dropbox.com/s/fd7hl33galgy8jh/Konzept_Henkenjohann_E-POST-Contao.pdf?dl=0
