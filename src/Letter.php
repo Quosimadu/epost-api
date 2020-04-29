@@ -14,6 +14,7 @@ use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\MultipartStream;
 use InvalidArgumentException;
 use LogicException;
+use Quosimadu\EPost\Api\Exception\InvalidFileType;
 use Quosimadu\EPost\Api\Exception\MissingAccessTokenException;
 use Quosimadu\EPost\Api\Exception\MissingAttachmentException;
 use Quosimadu\EPost\Api\Exception\MissingEnvelopeException;
@@ -200,6 +201,10 @@ class Letter
      */
     public function setAttachment($attachment): Letter
     {
+        if(mime_content_type($attachment) != 'application/pdf') {
+            throw new InvalidFileFormat('Unallowed file format. Allowed: pdf');
+        }
+
         $this->attachment = $attachment;
 
         return $this;
@@ -218,6 +223,18 @@ class Letter
         }
 
         return $this->attachment;
+    }
+
+    public function getLetter($letterId = null)
+    {
+        $letterId = $letterId ?? $this->getLetterId();
+
+        $response = $this->getHttpClient($this->getEndpoint())
+            ->request('GET', '/api/Letter/' . $letterId);
+
+        return json_decode(
+            $response->getBody()->getContents()
+        );
     }
 
     /**
