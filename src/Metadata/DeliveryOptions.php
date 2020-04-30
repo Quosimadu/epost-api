@@ -83,7 +83,6 @@ class DeliveryOptions implements JsonSerializable
      * @param bool $enabled
      *
      * @return self
-     * @throws InvalidArgumentException
      */
     public function setColor($enabled): DeliveryOptions
     {
@@ -101,6 +100,81 @@ class DeliveryOptions implements JsonSerializable
     public function getColor()
     {
         return $this->data['isColor'] ?? false;
+    }
+
+    /**
+     * The option specifies whether a color or black-and-white printing is carried out
+     *
+     * @param bool $enabled
+     *
+     * @return self
+     */
+    public function setTestFlag($enabled): DeliveryOptions
+    {
+        $this->data['testFlag'] = $enabled;
+
+        return $this;
+    }
+
+    /**
+     * Get testFlag property
+     *
+     * @return string
+     */
+    public function getTestFlag()
+    {
+        return $this->data['testFlag'] ?? false;
+
+    }
+
+    /**
+     * The option specifies whether a color or black-and-white printing is carried out
+     *
+     * @param string $emailAddress
+     *
+     * @return self
+     */
+    public function setTestEMail($emailAddress): DeliveryOptions
+    {
+        $this->data['testEMail'] = $emailAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get testFlag property
+     *
+     * @return string
+     */
+    public function getTestEMail()
+    {
+        return $this->data['testEMail'] ?? '';
+
+    }
+
+    /**
+     * The option specifies whether a color or black-and-white printing is carried out
+     *
+     * @param bool $enabled
+     *
+     * @return self
+     */
+    public function setTestShowRestrictedArea($enabled): DeliveryOptions
+    {
+        $this->data['testShowRestrictedArea'] = $enabled;
+
+        return $this;
+    }
+
+    /**
+     * Get testFlag property
+     *
+     * @return string
+     */
+    public function getTestShowRestrictedArea()
+    {
+        return $this->data['testShowRestrictedArea'] ?? false;
+
     }
 
     /**
@@ -129,7 +203,6 @@ class DeliveryOptions implements JsonSerializable
      * @param bool $enabled
      *
      * @return self
-     * @throws InvalidArgumentException
      */
     public function setCoverLetter($enabled): DeliveryOptions
     {
