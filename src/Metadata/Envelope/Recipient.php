@@ -12,7 +12,6 @@ namespace Quosimadu\EPost\Api\Metadata\Envelope;
 use InvalidArgumentException;
 use JsonSerializable;
 use Quosimadu\EPost\Api\Exception\InvalidRecipientDataException;
-use Quosimadu\EPost\Api\Metadata\Envelope\AbstractRecipient;
 
 
 /**

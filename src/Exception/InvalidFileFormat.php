@@ -12,7 +12,7 @@ namespace Quosimadu\EPost\Api\Exception;
 use LogicException;
 
 /**
- * Class InvalidRecipientDataException
+ * Class InvalidFileFormat
  * @package Quosimadu\EPost\Api\Exception
  */
 class InvalidFileFormat extends LogicException

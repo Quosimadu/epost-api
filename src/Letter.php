@@ -14,7 +14,7 @@ use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\MultipartStream;
 use InvalidArgumentException;
 use LogicException;
-use Quosimadu\EPost\Api\Exception\InvalidFileType;
+use Quosimadu\EPost\Api\Exception\InvalidFileFormat;
 use Quosimadu\EPost\Api\Exception\MissingAuthorizationTokenException;
 use Quosimadu\EPost\Api\Exception\MissingAttachmentException;
 use Quosimadu\EPost\Api\Exception\MissingEnvelopeException;
