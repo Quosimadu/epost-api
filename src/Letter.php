@@ -12,6 +12,7 @@ namespace Quosimadu\EPost\Api;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\MultipartStream;
+use Illuminate\Http\Response;
 use InvalidArgumentException;
 use LogicException;
 use Quosimadu\EPost\Api\Exception\InvalidFileType;
@@ -37,7 +38,7 @@ class Letter
      *
      * @var string
      */
-    private static $endpoint = 'https://api.epost.docuguide.com';
+    const API_ENDPOINT = 'https://api.epost.docuguide.com';
 
     /**
      * A toggle to enable test and integration environment
@@ -87,16 +88,6 @@ class Letter
      * @var string
      */
     private $letterId;
-
-    /**
-     * Get the endpoint for mailbox api
-     *
-     * @return string
-     */
-    public function getEndpoint()
-    {
-        return static::$endpoint;
-    }
 
     /**
      * Set the access token
@@ -228,15 +219,21 @@ class Letter
     {
         $letterId = $letterId ?? $this->getLetterId();
 
-        $response = $this->getHttpClient($this->getEndpoint())
+        $response = $this->getHttpClient(static::API_ENDPOINT)
             ->request('GET', '/api/Letter/' . $letterId);
 
-        return new LetterStatus(
-            json_decode(
-                $response->getBody()->getContents(),
-                true
-            )
+        $data = \GuzzleHttp\json_decode(
+            $response->getBody()->getContents(),
+            true
         );
+
+        if($response->getStatusCode() != Response::HTTP_OK) {
+            throw new Exception\ErrorException(
+                new Error($data)
+            );
+        }
+
+        return new LetterStatus($data);
     }
 
     /**
@@ -253,22 +250,51 @@ class Letter
             'body'    => json_encode($letterIds)
         ];
 
-        $response = $this->getHttpClient($this->getEndpoint())
+        $response = $this->getHttpClient(static::API_ENDPOINT)
             ->request('POST', '/api/Letter/StatusQuery?onlyIssues=' .( $onlyIssues ? 'true' : 'false' ),
                 $options);
 
-        $letterStatuses = [];
-
-        $result = json_decode(
+        $result = \GuzzleHttp\json_decode(
             $response->getBody()->getContents(),
             true
         );
+
+        if($response->getStatusCode() != 200) {
+            throw new Exception\ErrorException(
+                new Error($result)
+            );
+        }
+
+        $letterStatuses = [];
 
         foreach($result as $elementData) {
             $letterStatuses[] = new LetterStatus($elementData);
         }
 
         return $letterStatuses ?? $result;
+    }
+
+    public function getLetterStatusByDateRange($fromDate, $tillDate, $onlyIssues = false)
+    {
+        $response = $this->getHttpClient(static::API_ENDPOINT)
+            ->request('GET', '/api/Letter/Date', [
+                'query' => [
+                    compact(['fromDate', 'tillDate', 'onlyIssues'])
+                ]
+            ]);
+
+        $data = \GuzzleHttp\json_decode(
+            $response->getBody()->getContents(),
+            true
+        );
+
+        if($response->getStatusCode() != Response::HTTP_OK) {
+            throw new Exception\ErrorException(
+                new Error($data)
+            );
+        }
+
+        return new LetterStatus($data);
     }
 
     /**
@@ -389,16 +415,18 @@ class Letter
             'body'    => json_encode([$data]),
         ];
 
-        $response = $this->getHttpClient($this->getEndpoint())
+        $response = $this->getHttpClient(static::API_ENDPOINT)
             ->request('POST', '/api/Letter', $options);
 
-        $data     = \GuzzleHttp\json_decode($response->getBody()->getContents());
+        $data = \GuzzleHttp\json_decode($response->getBody()->getContents(), true);
 
-        if($response->getStatusCode() != 200) {
-            throw new \Exception($data);
+        if($response->getStatusCode() != Response::HTTP_OK) {
+            throw new Exception\ErrorException(
+                new Error($data)
+            );
         }
 
-        $this->setLetterId($data[0]->letterID);
+        $this->setLetterId($data[0]['letterID']);
 
         return $this;
     }
