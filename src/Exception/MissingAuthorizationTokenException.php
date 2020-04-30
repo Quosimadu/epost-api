@@ -11,7 +11,7 @@ namespace Quosimadu\EPost\Api\Exception;
 
 
 /**
- * Class MissingAccessTokenException
+ * Class MissingAuthorizationTokenException
  * @package Quosimadu\EPost\Api\Exception
  */
 class MissingAuthorizationTokenException extends MissingPreconditionException

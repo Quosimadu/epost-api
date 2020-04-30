@@ -15,7 +15,7 @@ use GuzzleHttp\Psr7\MultipartStream;
 use InvalidArgumentException;
 use LogicException;
 use Quosimadu\EPost\Api\Exception\InvalidFileType;
-use Quosimadu\EPost\Api\Exception\MissingAccessTokenException;
+use Quosimadu\EPost\Api\Exception\MissingAuthorizationTokenException;
 use Quosimadu\EPost\Api\Exception\MissingAttachmentException;
 use Quosimadu\EPost\Api\Exception\MissingEnvelopeException;
 use Quosimadu\EPost\Api\Exception\MissingPreconditionException;
@@ -116,12 +116,12 @@ class Letter
      * Get the access token
      *
      * @return AccessToken
-     * @throws MissingAccessTokenException If the AccessToken is missing
+     * @throws MissingAuthorizationTokenException If the AccessToken is missing
      */
     public function getAccessToken(): AccessToken
     {
         if (null === $this->accessToken) {
-            throw new MissingAccessTokenException('An AccessToken instance must be passed');
+            throw new MissingAuthorizationTokenException('An AccessToken instance must be passed');
         }
 
         return $this->accessToken;
