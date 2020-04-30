@@ -27,24 +27,17 @@ use Quosimadu\EPost\Api\Metadata\Envelope;
 /**
  * Class Letter
  *
- * @package Richardhj\EPost\Api
+ * @package Quosimadu\EPost\Api
  */
 class Letter
 {
 
     /**
-     * EPost endpoint for production environment
+     * EPost endpoint and integration environment
      *
      * @var string
      */
-    private static $endpointProduction = 'https://api.epost.docuguide.com';
-
-    /**
-     * EPost endpoint for test and integration environment
-     *
-     * @var string
-     */
-    private static $endpointTest = 'https://api.epost.docuguide.com';
+    private static $endpoint = 'https://api.epost.docuguide.com';
 
     /**
      * A toggle to enable test and integration environment
@@ -102,7 +95,7 @@ class Letter
      */
     public function getEndpoint()
     {
-        return !$this->isTestEnvironment() ? static::$endpointProduction : static::$endpointTest;
+        return static::$endpoint;
     }
 
     /**
@@ -225,16 +218,57 @@ class Letter
         return $this->attachment;
     }
 
-    public function getLetter($letterId = null)
+    /**
+     * Gather letter status from API
+     *
+     * @param null $letterId
+     * @return LetterStatus
+     */
+    public function getLetterStatus($letterId = null): LetterStatus
     {
         $letterId = $letterId ?? $this->getLetterId();
 
         $response = $this->getHttpClient($this->getEndpoint())
             ->request('GET', '/api/Letter/' . $letterId);
 
-        return json_decode(
-            $response->getBody()->getContents()
+        return new LetterStatus(
+            json_decode(
+                $response->getBody()->getContents(),
+                true
+            )
         );
+    }
+
+    /**
+     * Execute Letter Status Query with specified ids and result in batch
+     *
+     * @param array $letterIds
+     * @param bool $onlyIssues
+     * @return array
+     */
+    public function getMultipleLetterStatuses($letterIds = [], $onlyIssues = false) : array
+    {
+        $options = [
+            'headers' => [ 'Content-Type' => 'application/json' ],
+            'body'    => json_encode($letterIds)
+        ];
+
+        $response = $this->getHttpClient($this->getEndpoint())
+            ->request('POST', '/api/Letter/StatusQuery?onlyIssues=' .( $onlyIssues ? 'true' : 'false' ),
+                $options);
+
+        $letterStatuses = [];
+
+        $result = json_decode(
+            $response->getBody()->getContents(),
+            true
+        );
+
+        foreach($result as $elementData) {
+            $letterStatuses[] = new LetterStatus($elementData);
+        }
+
+        return $letterStatuses ?? $result;
     }
 
     /**
