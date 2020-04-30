@@ -19,18 +19,23 @@ use GuzzleHttp\Client as HttpClient;
  */
 class AccessToken
 {
-    protected string $token;
+    protected string $vendorID;
+    protected string $ekp;
+    protected string $secret;
+    protected string $password;
 
     /**
      * AccessToken constructor.
      *
      * @param $token
      */
-    public function __construct($token)
+    public function __construct($vendorID, $ekp, $secret, $password)
     {
-        $this->token = $token;
+        $this->vendorID = $vendorID;
+        $this->ekp = $ekp;
+        $this->secret = $secret;
+        $this->password = $password;
     }
-
     /**
      * get an authentication token
      *
@@ -38,6 +43,10 @@ class AccessToken
      */
     public function getToken(): string
     {
-        return $this->token;
+        static $token;
+        if (empty($token)) {
+            $token = (new Login())->login($this->vendorID, $this->ekp, $this->secret, $this->password)['token'];
+        }
+        return $token;
     }
 }

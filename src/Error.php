@@ -19,6 +19,8 @@ class Error
     }
 
     /**
+     * Returns the level of the message: [ Info, Warning, Error ]
+     *
      * @return string
      */
     public function getLevel(): string
@@ -27,6 +29,8 @@ class Error
     }
 
     /**
+     * Return the message code
+     *
      * @return string
      */
     public function getCode(): string
@@ -35,6 +39,8 @@ class Error
     }
 
     /**
+     * Returns the message description
+     *
      * @return string
      */
     public function getDescription(): string

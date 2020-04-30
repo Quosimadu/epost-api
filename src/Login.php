@@ -11,6 +11,7 @@ namespace Quosimadu\EPost\Api;
 
 
 use GuzzleHttp\Client as HttpClient;
+use Illuminate\Http\Response;
 
 /**
  * Class Login
@@ -19,7 +20,7 @@ use GuzzleHttp\Client as HttpClient;
  */
 class Login
 {
-    public function login($vendorID, $ekp, $secret, $password, $endpoint): array
+    public function login($vendorID, $ekp, $secret, $password): array
     {
         $options = [
             'headers' => ['Content-Type' => 'application/json'],
@@ -28,16 +29,24 @@ class Login
             )
         ];
 
-        $request =
-            (new HttpClient(['base_uri' => $endpoint]))
+        $response = (new HttpClient(['base_uri' => Letter::API_ENDPOINT]))
                 ->request('POST', '/api/Login', $options);
 
-        $response = $request->getBody()->getContents();
+        $result = \GuzzleHttp\json_decode(
+            $response->getBody()->getContents(),
+            true
+        );
 
-        return json_decode($response, true);
+        if($response->getStatusCode() != Response::HTTP_OK) {
+            throw new Exception\ErrorException(
+                new Error($result)
+            );
+        }
+
+        return $result;
     }
 
-    public function smsRequest($vendorID, $ekp, $endpoint)
+    public function smsRequest($vendorID, $ekp): string
     {
         $options = [
             'headers' => ['Content-Type' => 'application/json'],
@@ -46,18 +55,24 @@ class Login
             )
         ];
 
-        $request =
-            (new HttpClient(['base_uri' => $endpoint]))
+        $response = (new HttpClient(['base_uri' => Letter::API_ENDPOINT]))
                 ->request('POST', '/api/Login/smsRequest', $options);
 
-        $response = $request->getBody()->getContents();
+        $result = \GuzzleHttp\json_decode(
+            $response->getBody()->getContents(),
+            true
+        );
 
-        $json = json_decode($response, true);
+        if($response->getStatusCode() != Response::HTTP_ACCEPTED) {
+            throw new Exception\ErrorException(
+                new Error($result)
+            );
+        }
 
-        return (json_last_error() == JSON_ERROR_NONE) ? $response : $json;
+        return $response->getBody()->getContents();
     }
 
-    public function setPassword($vendorID, $ekp, $newPassword, $smsCode, $endpoint)
+    public function setPassword($vendorID, $ekp, $newPassword, $smsCode)
     {
         $options = [
             'headers' => ['Content-Type' => 'application/json'],
@@ -66,14 +81,20 @@ class Login
             )
         ];
 
-        $request =
-            (new HttpClient(['base_uri' => $endpoint]))
+        $response = (new HttpClient(['base_uri' => Letter::API_ENDPOINT]))
                 ->request('POST', '/api/Login/setPassword', $options);
 
-        $response = $request->getBody()->getContents();
+        $result = \GuzzleHttp\json_decode(
+            $response->getBody()->getContents(),
+            true
+        );
 
-        $json = json_decode($response, true);
+        if($response->getStatusCode() != Response::HTTP_OK) {
+            throw new Exception\ErrorException(
+                new Error($result)
+            );
+        }
 
-        return (json_last_error() == JSON_ERROR_NONE) ? $response : $json;
+        return $response->getBody()->getContents();
     }
 }

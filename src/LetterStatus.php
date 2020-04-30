@@ -55,6 +55,27 @@ class LetterStatus
     }
 
     /**
+     * get a value by key from details
+     *
+     * @param $key
+     * @return mixed
+     */
+    public function get($key)
+    {
+        return $this->data[$key];
+    }
+
+    /**
+     * get a full status details
+     *
+     * @return array
+     */
+    public function getStatusDetails(): array
+    {
+        return $this->data;
+    }
+
+    /**
      * get array of errors
      *
      * @return array
