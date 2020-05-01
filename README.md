@@ -1,4 +1,4 @@
-# E-POSTBUSINESS API PHP integration
+# E-POSTBUSINESS API V2 PHP integration
 
 [![Build Status][ico-build]][link-build]
 [![Latest Version on Packagist][ico-version]][link-packagist]
