@@ -1,5 +1,5 @@
 {
-  "name": "quosimadu/epost-api",
+  "name": "metabytes-sro/epost-api",
   "description": "E-POSTBUSINESS API PHP integration",
   "authors": [
     {
@@ -11,8 +11,8 @@
   ],
   "license": "LGPL-3.0+",
   "support": {
-    "issues": "https://github.com/quosimadu/epost-api/issues",
-    "source": "https://github.com/quosimadu/epost-api"
+    "issues": "https://github.com/metabytes-sro/epost-api/issues",
+    "source": "https://github.com/metabytes-sro/epost-api"
   },
   "require": {
     "php": "^7.0",
@@ -20,7 +20,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Quosimadu\\EPost\\Api\\": "src/"
+      "MetabytesSRO\\EPost\\Api\\": "src/"
     }
   }
 }

@@ -1,25 +1,25 @@
 <?php
 
 /**
- * This file is part of quosimadu/epost-api.
+ * This file is part of metabytes-sro/epost-api.
  *
- * @package   quosimadu/epost-api
+ * @package   metabytes-sro/epost-api
  * @author    Mantas Samaitis <mantas.samaitis@integrus.lt>, Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  */
 
-namespace Quosimadu\EPost\Api\Metadata;
+namespace MetabytesSRO\EPost\Api\Metadata;
 
 use InvalidArgumentException;
 use LogicException;
 use JsonSerializable;
-use Quosimadu\EPost\Api\Metadata\Envelope\AbstractRecipient;
-use Quosimadu\EPost\Api\Metadata\Envelope\Recipient;
+use MetabytesSRO\EPost\Api\Metadata\Envelope\AbstractRecipient;
+use MetabytesSRO\EPost\Api\Metadata\Envelope\Recipient;
 
 
 /**
  * Class Envelope
  *
- * @package Quosimadu\EPost\Api\Metadata
+ * @package MetabytesSRO\EPost\Api\Metadata
  */
 class Envelope implements JsonSerializable
 {

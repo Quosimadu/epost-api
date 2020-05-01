@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Quosimadu\EPost\Api;
+namespace MetabytesSRO\EPost\Api;
 
 
 class Error

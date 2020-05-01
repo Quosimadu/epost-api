@@ -1,18 +1,18 @@
 <?php
 
 /**
- * This file is part of quosimadu/epost-api.
+ * This file is part of metabytes-sro/epost-api.
  *
- * @package   quosimadu/epost-api
+ * @package   metabytes-sro/epost-api
  * @author    Mantas Samaitis <mantas.samaitis@integrus.lt>, Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  */
 
-namespace Quosimadu\EPost\Api;
+namespace MetabytesSRO\EPost\Api;
 
 /**
  * Class LetterStatus
  *
- * @package Quosimadu\EPost\Api
+ * @package MetabytesSRO\EPost\Api
  */
 class LetterStatus
 {

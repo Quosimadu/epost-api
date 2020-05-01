@@ -1,20 +1,20 @@
 <?php
 
 /**
- * This file is part of quosimadu/epost-api.
+ * This file is part of metabytes-sro/epost-api.
  *
- * @package   quosimadu/epost-api
+ * @package   metabytes-sro/epost-api
  * @author    Mantas Samaitis <mantas.samaitis@integrus.lt>
  */
 
-namespace Quosimadu\EPost\Api\Exception;
+namespace MetabytesSRO\EPost\Api\Exception;
 
 use LogicException;
-use Quosimadu\EPost\Api\Error;
+use MetabytesSRO\EPost\Api\Error;
 
 /**
  * Class ErrorException
- * @package Quosimadu\EPost\Api\Exception
+ * @package MetabytesSRO\EPost\Api\Exception
  */
 class ErrorException extends LogicException
 {

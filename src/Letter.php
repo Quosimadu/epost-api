@@ -1,13 +1,13 @@
 <?php
 
 /**
- * This file is part of quosimadu/epost-api.
+ * This file is part of metabytes-sro/epost-api.
  *
- * @package   quosimadu/epost-api
+ * @package   metabytes-sro/epost-api
  * @author    Mantas Samaitis <mantas.samaitis@integrus.lt>, Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  */
 
-namespace Quosimadu\EPost\Api;
+namespace MetabytesSRO\EPost\Api;
 
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\BadResponseException;
@@ -15,20 +15,20 @@ use GuzzleHttp\Psr7\MultipartStream;
 use Illuminate\Http\Response;
 use InvalidArgumentException;
 use LogicException;
-use Quosimadu\EPost\Api\Exception\InvalidFileFormat;
-use Quosimadu\EPost\Api\Exception\MissingAuthorizationTokenException;
-use Quosimadu\EPost\Api\Exception\MissingAttachmentException;
-use Quosimadu\EPost\Api\Exception\MissingEnvelopeException;
-use Quosimadu\EPost\Api\Exception\MissingPreconditionException;
-use Quosimadu\EPost\Api\Exception\MissingRecipientException;
-use Quosimadu\EPost\Api\Metadata\DeliveryOptions;
-use Quosimadu\EPost\Api\Metadata\Envelope;
+use MetabytesSRO\EPost\Api\Exception\InvalidFileFormat;
+use MetabytesSRO\EPost\Api\Exception\MissingAuthorizationTokenException;
+use MetabytesSRO\EPost\Api\Exception\MissingAttachmentException;
+use MetabytesSRO\EPost\Api\Exception\MissingEnvelopeException;
+use MetabytesSRO\EPost\Api\Exception\MissingPreconditionException;
+use MetabytesSRO\EPost\Api\Exception\MissingRecipientException;
+use MetabytesSRO\EPost\Api\Metadata\DeliveryOptions;
+use MetabytesSRO\EPost\Api\Metadata\Envelope;
 
 
 /**
  * Class Letter
  *
- * @package Quosimadu\EPost\Api
+ * @package MetabytesSRO\EPost\Api
  */
 class Letter
 {
