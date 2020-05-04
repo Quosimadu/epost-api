@@ -41,10 +41,11 @@ class Recipient implements JsonSerializable
         'addressLine5'    => 80,
         'zipCode'       => 20, // postal code (ex. 53115)
         'city'          => 80,
+        'country'       => 80
     ];
 
     /**
-     * @param string $company
+     * Set an address line by number
      *
      * @return self
      */
@@ -69,11 +70,11 @@ class Recipient implements JsonSerializable
     }
 
     /**
-     * @param string $zipCode
+     * Set a zip code
      *
      * @return self
      */
-    public function setZipCode($zipCode): Recipient
+    public function setZipCode(string $zipCode): Recipient
     {
         self::validateSetLength('zipCode', $zipCode);
         $this->data['zipCode'] = $zipCode;
@@ -82,6 +83,8 @@ class Recipient implements JsonSerializable
     }
 
     /**
+     * Get a zip code
+     *
      * @return string
      */
     public function getZipCode()
@@ -90,11 +93,11 @@ class Recipient implements JsonSerializable
     }
 
     /**
-     * @param string $city
+     * Set a city
      *
      * @@return self
      */
-    public function setCity($city): Recipient
+    public function setCity(string $city): Recipient
     {
         self::validateSetLength('city', $city);
         $this->data['city'] = $city;
@@ -103,11 +106,37 @@ class Recipient implements JsonSerializable
     }
 
     /**
+     * Get a city
+     *
      * @return string
      */
     public function getCity()
     {
         return $this->data['city'] ?? null;
+    }
+
+    /**
+     * Set a country
+     * Hier muss der Ländername nach ISO 3166-1 in GROßBUCHSTABEN und deutscher Sprache hinterlegt werden. (z.B. KROATIEN, ITALIEN, ÖSTERREICH ..). Inlandsendungen benötigen keine Länderangabe.
+     *
+     * @return self
+     */
+    public function setCountry(string $country): Recipient
+    {
+        self::validateSetLength('country', $zipCode);
+        $this->data['country'] = $zipCode;
+
+        return $this;
+    }
+
+    /**
+     * Get a country
+     *
+     * @return string
+     */
+    public function getCountry()
+    {
+        return $this->data['country'] ?? null;
     }
 
 

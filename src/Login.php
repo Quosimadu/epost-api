@@ -11,6 +11,7 @@ namespace MetabytesSRO\EPost\Api;
 
 
 use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Response;
 
 /**
@@ -29,21 +30,17 @@ class Login
             )
         ];
 
-        $response = (new HttpClient(['base_uri' => Letter::API_ENDPOINT]))
-                ->request('POST', '/api/Login', $options);
+        try {
+            $response = (new HttpClient(['base_uri' => Letter::API_ENDPOINT]))
+                    ->request('POST', '/api/Login', $options);
+        } catch (ClientException $e) {
+            $this->throwErrorException($e);
+        }
 
-        $result = \GuzzleHttp\json_decode(
+        return \GuzzleHttp\json_decode(
             $response->getBody()->getContents(),
             true
         );
-
-        if($response->getStatusCode() != Response::HTTP_OK) {
-            throw new Exception\ErrorException(
-                new Error($result)
-            );
-        }
-
-        return $result;
     }
 
     public function smsRequest($vendorID, $ekp): string
@@ -55,18 +52,11 @@ class Login
             )
         ];
 
-        $response = (new HttpClient(['base_uri' => Letter::API_ENDPOINT]))
-                ->request('POST', '/api/Login/smsRequest', $options);
-
-        $result = \GuzzleHttp\json_decode(
-            $response->getBody()->getContents(),
-            true
-        );
-
-        if($response->getStatusCode() != Response::HTTP_ACCEPTED) {
-            throw new Exception\ErrorException(
-                new Error($result)
-            );
+        try {
+            $response = (new HttpClient(['base_uri' => Letter::API_ENDPOINT]))
+                    ->request('POST', '/api/Login/smsRequest', $options);
+        } catch (ClientException $e) {
+            $this->throwErrorException($e);
         }
 
         return $response->getBody()->getContents();
@@ -81,20 +71,30 @@ class Login
             )
         ];
 
-        $response = (new HttpClient(['base_uri' => Letter::API_ENDPOINT]))
+        try {
+            $response = (new HttpClient(['base_uri' => Letter::API_ENDPOINT]))
                 ->request('POST', '/api/Login/setPassword', $options);
-
-        $result = \GuzzleHttp\json_decode(
-            $response->getBody()->getContents(),
-            true
-        );
-
-        if($response->getStatusCode() != Response::HTTP_OK) {
-            throw new Exception\ErrorException(
-                new Error($result)
-            );
+        } catch (ClientException $e) {
+            $this->throwErrorException($e);
         }
 
         return $response->getBody()->getContents();
+    }
+
+    /**
+     * Throws an exception
+     *
+     * @param $e
+     */
+    protected function throwErrorException($e): void
+    {
+        throw new Exception\ErrorException(
+            new Error(
+                \GuzzleHttp\json_decode(
+                    $e->getResponse()->getBody()->getContents(),
+                    true
+                )
+            )
+        );
     }
 }

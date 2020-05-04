@@ -11,6 +11,7 @@ namespace MetabytesSRO\EPost\Api;
 
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\MultipartStream;
 use Illuminate\Http\Response;
 use InvalidArgumentException;
@@ -219,21 +220,19 @@ class Letter
     {
         $letterId = $letterId ?? $this->getLetterId();
 
-        $response = $this->getHttpClient(static::API_ENDPOINT)
-            ->request('GET', '/api/Letter/' . $letterId);
-
-        $data = \GuzzleHttp\json_decode(
-            $response->getBody()->getContents(),
-            true
-        );
-
-        if($response->getStatusCode() != Response::HTTP_OK) {
-            throw new Exception\ErrorException(
-                new Error($data)
-            );
+        try {
+            $response = $this->getHttpClient(static::API_ENDPOINT)
+                ->request('GET', '/api/Letter/' . $letterId);
+        } catch (ClientException $e) {
+            $this->throwErrorException($e);
         }
 
-        return new LetterStatus($data);
+        return new LetterStatus(
+            \GuzzleHttp\json_decode(
+                $response->getBody()->getContents(),
+                true
+            )
+        );
     }
 
     /**
@@ -250,20 +249,18 @@ class Letter
             'body'    => json_encode($letterIds)
         ];
 
-        $response = $this->getHttpClient(static::API_ENDPOINT)
-            ->request('POST', '/api/Letter/StatusQuery?onlyIssues=' .( $onlyIssues ? 'true' : 'false' ),
-                $options);
+        try {
+            $response = $this->getHttpClient(static::API_ENDPOINT)
+                ->request('POST', '/api/Letter/StatusQuery?onlyIssues=' .( $onlyIssues ? 'true' : 'false' ),
+                    $options);
+        } catch (ClientException $e) {
+            $this->throwErrorException($e);
+        }
 
         $result = \GuzzleHttp\json_decode(
             $response->getBody()->getContents(),
             true
         );
-
-        if($response->getStatusCode() != 200) {
-            throw new Exception\ErrorException(
-                new Error($result)
-            );
-        }
 
         $letterStatuses = [];
 
@@ -274,27 +271,25 @@ class Letter
         return $letterStatuses ?? $result;
     }
 
-    public function getLetterStatusByDateRange($fromDate, $tillDate, $onlyIssues = false)
+    public function getLetterStatusByDateRange($fromDate, $tillDate, $onlyIssues = false): array
     {
-        $response = $this->getHttpClient(static::API_ENDPOINT)
-            ->request('GET', '/api/Letter/Date', [
-                'query' => [
-                    compact(['fromDate', 'tillDate', 'onlyIssues'])
-                ]
-            ]);
+        $onlyIssues = $onlyIssues ? 'true' : 'false';
 
-        $data = \GuzzleHttp\json_decode(
+        try {
+            $response = $this->getHttpClient(static::API_ENDPOINT)
+                ->request('GET', '/api/Letter/Date', [
+                    'query' => compact(['fromDate',
+                        'tillDate',
+                        'onlyIssues'])
+                ]);
+        } catch (ClientException $e) {
+            $this->throwErrorException($e);
+        }
+
+        return \GuzzleHttp\json_decode(
             $response->getBody()->getContents(),
             true
         );
-
-        if($response->getStatusCode() != Response::HTTP_OK) {
-            throw new Exception\ErrorException(
-                new Error($data)
-            );
-        }
-
-        return new LetterStatus($data);
     }
 
     /**
@@ -415,16 +410,14 @@ class Letter
             'body'    => json_encode([$data]),
         ];
 
-        $response = $this->getHttpClient(static::API_ENDPOINT)
-            ->request('POST', '/api/Letter', $options);
+        try {
+            $response = $this->getHttpClient(static::API_ENDPOINT)
+                ->request('POST', '/api/Letter', $options);
+        } catch (ClientException $e) {
+            $this->throwErrorException($e);
+        }
 
         $data = \GuzzleHttp\json_decode($response->getBody()->getContents(), true);
-
-        if($response->getStatusCode() != Response::HTTP_OK) {
-            throw new Exception\ErrorException(
-                new Error($data)
-            );
-        }
 
         $this->setLetterId($data[0]['letterID']);
 
@@ -447,6 +440,23 @@ class Letter
                     'Authorization' => 'Bearer '. $this->getAccessToken()->getToken(),
                 ],
             ]
+        );
+    }
+
+    /**
+     * Throws an exception
+     *
+     * @param $e
+     */
+    protected function throwErrorException($e): void
+    {
+        throw new Exception\ErrorException(
+            new Error(
+                \GuzzleHttp\json_decode(
+                    $e->getResponse()->getBody()->getContents(),
+                    true
+                )
+            )
         );
     }
 }

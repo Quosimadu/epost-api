@@ -11,11 +11,11 @@ class Error
     protected string $code;
     protected string $description;
 
-    public function __construct($level, $code, $description)
+    public function __construct($data = [])
     {
-        $this->level = $level;
-        $this->code = $code;
-        $this->description = $description;
+        $this->level = $data['level'];
+        $this->code = $data['code'];
+        $this->description = $data['description'];
     }
 
     /**

@@ -24,7 +24,9 @@ class ErrorException extends LogicException
     {
         $this->level = $error->getLevel();
 
-        parent::__construct($error->getDescription(), $error->getCode(), $previous);
+        parent::__construct($error->getDescription(), 0, $previous);
+
+        $this->code = $error->getCode();
     }
 
     public function getLevel()
