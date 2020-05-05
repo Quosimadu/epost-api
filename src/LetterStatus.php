@@ -70,9 +70,9 @@ class LetterStatus
      *
      * @return array
      */
-    public function getStatusDetails(): array
+    public function getStatusDetails(): string
     {
-        return $this->data;
+        return $this->data['statusDetails'];
     }
 
     /**
