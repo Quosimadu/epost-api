@@ -123,8 +123,8 @@ class Recipient implements JsonSerializable
      */
     public function setCountry(string $country): Recipient
     {
-        self::validateSetLength('country', $zipCode);
-        $this->data['country'] = $zipCode;
+        self::validateSetLength('country', $country);
+        $this->data['country'] = $country;
 
         return $this;
     }
