@@ -49,6 +49,13 @@ class Letter
     private $testEnvironment;
 
     /**
+     * EPost Test Email for Test Environment being enabled
+     *
+     * @var bool
+     */
+    private $testEmail;
+
+    /**
      * The OAuth access token instance
      *
      * @var AccessToken
@@ -361,6 +368,20 @@ class Letter
     }
 
     /**
+     * Sets Email for Test Environment
+     *
+     * @param string $email
+     *
+     * @return self
+     */
+    public function setTestEmail($testEmail): Letter
+    {
+        $this->testEmail = $testEmail;
+
+        return $this;
+    }
+
+    /**
      * Return true for enabled test and integration environment
      *
      * @return bool
@@ -401,7 +422,8 @@ class Letter
 
         if($this->isTestEnvironment()) {
             $data = array_merge($data, [
-                'testFlag' => true
+                'testFlag' => true,
+                'testEMail' => $this->testEmail
             ]);
         }
 
