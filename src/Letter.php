@@ -420,7 +420,7 @@ class Letter
             $data = array_merge($data, $this->getDeliveryOptions()->getData());
         }
 
-        if($this->isTestEnvironment()) {
+        if(!empty($this->testEmail)) {
             $data = array_merge($data, [
                 'testFlag' => true,
                 'testEMail' => $this->testEmail
