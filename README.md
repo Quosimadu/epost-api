@@ -15,7 +15,7 @@ Via Composer
 $ composer require metabytes-sro/epost-api
 ```
 
-**For new implementations, I recommend to start with `v0.10.x-dev`.**
+**For new implementations, I recommend to start with `v0.11-beta`.**
 
 ## Usage
 
