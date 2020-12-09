@@ -15,7 +15,7 @@
     "source": "https://github.com/metabytes-sro/epost-api"
   },
   "require": {
-    "php": "^7.0",
+    "php": "^7.0||^8.0",
     "guzzlehttp/guzzle": "^7.0.1"
   },
   "autoload": {
